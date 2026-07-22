@@ -14,18 +14,13 @@ from fastapi.responses import HTMLResponse
 import os
 
 
-@app.get("/", response_class=HTMLResponse)
-def read_root():
-    if os.path.exists("index.html"):
-        with open("index.html", "r", encoding="utf-8") as f:
-            return f.read()
-    return "<h3>NCC Master Suite Backend is Live! (index.html not found in root directory)</h3>"
+
 # --- CONFIGURATION ---
 GEMINI_API_KEY = "your api key"
 PDF_FILENAME = "NCC Common Subject[1].pdf"
 DB_NAME = "quiz_bank.db"
 
-app = FastAPI(title="Best Cadet 100-Q Hybrid Master API")
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -53,6 +48,12 @@ class QuizResponse(BaseModel):
     source: str
     total_questions: int
     questions: List[Question]
+@app.get("/", response_class=HTMLResponse)
+def read_root():
+    if os.path.exists("index.html"):
+        with open("index.html", "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h3>NCC Master Suite Backend is Live!</h3>"
 
 # --- DATABASE SETUP ---
 def init_db():
