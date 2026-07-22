@@ -17,10 +17,9 @@ import os
 from google import genai
 
 # This looks for the environment variable you set on Render
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-
-client = genai.Client(api_key=API_KEY)
-
+api_key = os.environ.get("GEMINI_API_KEY")
+client = genai.Client(api_key=api_key)
+GEMINI_API_KEY=api_key
 # --- CONFIGURATION ---
 
 PDF_FILENAME = "NCC Common Subject[1].pdf"
