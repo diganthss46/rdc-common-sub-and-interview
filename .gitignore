@@ -1,0 +1,4 @@
+quiz_bank.db
+*.pdf
+__pycache__/
+.env

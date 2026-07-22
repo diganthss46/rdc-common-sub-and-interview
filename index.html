@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCC Best Cadet - Master Preparation Suite</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1e24; color: #f0f4f8; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: #252a34; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        h1 { color: #eda514; text-align: center; margin-top: 0; }
+        p.subtitle { text-align: center; color: #a0aec0; margin-bottom: 25px; }
+
+        /* Navigation Bar */
+        .nav-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; background: #1f232b; padding: 15px; border-radius: 8px; }
+        .nav-btn { background: #4a5568; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.2s; }
+        .nav-btn.active { background: #3182ce; }
+        .nav-btn:hover { background: #2b6cb0; }
+
+        /* Section Panels */
+        .section-panel { display: none; }
+        .section-panel.active { display: block; }
+
+        /* Quiz Styles */
+        .controls { text-align: center; margin-bottom: 30px; padding: 25px; background: #1f232b; border-radius: 8px; }
+        .btn-grand { background: #e53e3e; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px; transition: 0.2s; box-shadow: 0 4px 12px rgba(229,62,62,0.4); }
+        .btn-grand:hover { background: #c53030; }
+        .question-card { background: #2d3748; border-left: 5px solid #e53e3e; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .tag { display: inline-block; background: #4a5568; color: #e2e8f0; font-size: 12px; font-weight: bold; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; }
+        .options { list-style-type: none; padding: 0; margin-top: 15px; }
+        .options li { background: #1a202c; padding: 12px 15px; margin: 8px 0; border: 1px solid #4a5568; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .options li:hover { background: #2d3748; border-color: #e2e8f0; }
+        .explanation { display: none; margin-top: 15px; padding: 15px; background: #1a202c; border-left: 4px solid #38a169; border-radius: 4px; color: #cbd5e0; }
+        .meta-info { background: #1a202c; padding: 10px 15px; border-radius: 6px; margin-bottom: 20px; color: #63b3ed; font-weight: 600; text-align: center; }
+
+        /* Interview Styles */
+        .chat-box { height: 500px; background: #1f232b; border: 1px solid #4a5568; border-radius: 8px; padding: 20px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .message { padding: 12px 16px; border-radius: 8px; max-width: 80%; line-height: 1.5; font-size: 15px; }
+        .message.interviewer { background: #2d3748; color: #e2e8f0; align-self: flex-start; border-left: 4px solid #3182ce; }
+        .message.cadet { background: #2b6cb0; color: white; align-self: flex-end; }
+        .input-area { display: flex; gap: 10px; }
+        textarea { flex: 1; background: #1a202c; color: white; border: 1px solid #4a5568; padding: 12px; border-radius: 6px; resize: none; height: 50px; font-family: inherit; font-size: 14px; }
+        textarea:focus { outline: none; border-color: #3182ce; }
+        .btn-send { background: #38a169; color: white; border: none; padding: 0 25px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-send:hover { background: #2f855a; }
+        .btn-start { background: #d69e2e; color: #1a1e24; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+
+        #loader { text-align: center; display: none; font-weight: bold; color: #eda514; margin: 25px 0; font-size: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎖️ NCC Best Cadet Master Suite</h1>
+    <p class="subtitle">Republic Day Camp (RDC) • Written Grand Test & SSB Board Interview Simulator</p>
+    
+    <!-- Top Navigation Buttons -->
+    <div class="nav-bar">
+        <button class="nav-btn active" id="nav-quiz" onclick="switchTab('quiz')">📝 100-Q Written Grand Test</button>
+        <button class="nav-btn" id="nav-interview" onclick="switchTab('interview')">🎙️ SSB Board Interview</button>
+    </div>
+
+    <!-- SECTION 1: 100-QUESTION GRAND TEST -->
+    <div id="panel-quiz" class="section-panel active">
+        <div class="controls">
+            <button class="btn-grand" onclick="generateGrandTest()">🚀 Start 100-Question Exam Simulation</button>
+        </div>
+        <div id="loader">⏳ Assembling your 100-question test paper. (Syllabus loads instantly from DB; unique GK takes a moment to compile fresh)...</div>
+        <div id="quiz-container"></div>
+    </div>
+
+    <!-- SECTION 2: SSB INTERVIEW SIMULATOR -->
+    <div id="panel-interview" class="section-panel">
+        <div style="text-align: center;">
+            <button class="btn-start" onclick="startInterview()">Start / Reset Board Interview</button>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <div class="message interviewer">Click "Start / Reset Board Interview" above. The Board President is stepping into the room.</div>
+        </div>
+        <div class="input-area">
+            <textarea id="userInput" placeholder="Type your response like a cadet standing at attention..." onkeydown="handleKey(event)"></textarea>
+            <button class="btn-send" onclick="sendAnswer()">Send</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = "http://127.0.0.1:8000";
+    let conversationHistory = [];
+
+    // Tab Switching Logic
+    function switchTab(tab) {
+        document.getElementById('nav-quiz').classList.remove('active');
+        document.getElementById('nav-interview').classList.remove('active');
+        document.getElementById('panel-quiz').classList.remove('active');
+        document.getElementById('panel-interview').classList.remove('active');
+
+        if(tab === 'quiz') {
+            document.getElementById('nav-quiz').classList.add('active');
+            document.getElementById('panel-quiz').classList.add('active');
+        } else {
+            document.getElementById('nav-interview').classList.add('active');
+            document.getElementById('panel-interview').classList.add('active');
+        }
+    }
+
+    // --- QUIZ LOGIC ---
+    async function generateGrandTest() {
+        showLoader(true);
+        try {
+            const response = await fetch(`${API_URL}/generate/grand-test`);
+            const data = await response.json();
+            if(response.ok) {
+                renderQuiz(data.questions, data.source, data.total_questions);
+            } else {
+                alert("Error: " + data.detail);
+                showLoader(false);
+            }
+        } catch (error) {
+            alert("Backend connection failed. Ensure uvicorn is running in your terminal!");
+            showLoader(false);
+        }
+    }
+
+    function renderQuiz(questions, source, total) {
+        showLoader(false);
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = `
+            <div class="meta-info">Paper Details: ${source}</div>
+            <h3 style="color:#e2e8f0; border-bottom: 1px solid #4a5568; padding-bottom: 10px; margin-top: 0;">Total Questions Generated: ${total}</h3>
+        `;
+
+        questions.forEach((q, index) => {
+            let optionsHTML = '';
+            q.options.forEach(opt => {
+                const isCorrect = opt.trim().toLowerCase() === q.correct_answer.trim().toLowerCase();
+                optionsHTML += `<li onclick="checkAnswer(this, ${isCorrect}, 'exp-${index}')">${opt}</li>`;
+            });
+
+            const categoryTag = q.category ? `<span class="tag">${q.category}</span>` : '';
+
+            container.innerHTML += `
+                <div class="question-card">
+                    ${categoryTag}
+                    <p style="font-size: 16px; font-weight: 600;">Q${index + 1}: ${q.question}</p>
+                    <ul class="options">${optionsHTML}</ul>
+                    <div class="explanation" id="exp-${index}">
+                        <strong style="color: #48bb78;">Correct Answer: ${q.correct_answer}</strong><br><br>
+                        ${q.explanation}
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function checkAnswer(element, isCorrect, expId) {
+        const parentList = element.parentElement;
+        const items = parentList.getElementsByTagName('li');
+        for(let item of items) { item.style.pointerEvents = 'none'; }
+
+        if (isCorrect) {
+            element.style.background = "#22543d"; 
+            element.style.borderColor = "#38a169";
+        } else {
+            element.style.background = "#742a2a"; 
+            element.style.borderColor = "#e53e3e";
+            for(let item of items) {
+                if(item.getAttribute("onclick").includes("true")) {
+                    item.style.background = "#22543d";
+                    item.style.borderColor = "#38a169";
+                }
+            }
+        }
+        document.getElementById(expId).style.display = "block";
+    }
+
+    function showLoader(show) {
+        document.getElementById('loader').style.display = show ? "block" : "none";
+        if(show) document.getElementById('quiz-container').innerHTML = "";
+    }
+
+    // --- INTERVIEW LOGIC ---
+    async function startInterview() {
+        conversationHistory = [];
+        document.getElementById('chatBox').innerHTML = `<div class="message interviewer">Board session initializing... Please stand by.</div>`;
+        
+        conversationHistory.push({
+            role: "cadet",
+            message: "Good day, Sir. I am reporting for my Best Cadet personal interview."
+        });
+
+        await fetchNextAIResponse();
+    }
+
+    async function sendAnswer() {
+        const inputField = document.getElementById('userInput');
+        const text = inputField.value.trim();
+        if(!text) return;
+
+        appendMessage(text, 'cadet');
+        conversationHistory.push({ role: "cadet", message: text });
+        inputField.value = "";
+
+        await fetchNextAIResponse();
+    }
+
+    async function fetchNextAIResponse() {
+        appendMessage("Board President is reviewing your file...", 'interviewer', true);
+
+        try {
+            const response = await fetch(`${API_URL}/interview/chat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ history: conversationHistory })
+            });
+
+            const data = await response.json();
+            removeLoader();
+
+            if(response.ok) {
+                appendMessage(data.reply, 'interviewer');
+                conversationHistory.push({ role: "interviewer", message: data.reply });
+            } else {
+                appendMessage("Error: " + data.detail, 'interviewer');
+            }
+        } catch (error) {
+            removeLoader();
+            appendMessage("Connection failed. Check if uvicorn is running.", 'interviewer');
+        }
+    }
+
+    function appendMessage(text, sender, isTemp = false) {
+        const box = document.getElementById('chatBox');
+        if(isTemp) {
+            box.innerHTML += `<div class="message interviewer temp-load" style="color: #a0aec0; font-style: italic;">${text}</div>`;
+        } else {
+            box.innerHTML += `<div class="message ${sender}">${text.replace(/\n/g, '<br>')}</div>`;
+        }
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function removeLoader() {
+        const temp = document.querySelector('.temp-load');
+        if(temp) temp.remove();
+    }
+
+    function handleKey(event) {
+        if(event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendAnswer();
+        }
+    }
+</script>
+
+</body>
+</html>
