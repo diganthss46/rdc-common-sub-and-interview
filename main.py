@@ -13,10 +13,16 @@ from google import genai
 from fastapi.responses import HTMLResponse
 import os
 
+import os
+from google import genai
 
+# This looks for the environment variable you set on Render
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+client = genai.Client(api_key=API_KEY)
 
 # --- CONFIGURATION ---
-GEMINI_API_KEY = "your api key"
+
 PDF_FILENAME = "NCC Common Subject[1].pdf"
 DB_NAME = "quiz_bank.db"
 
