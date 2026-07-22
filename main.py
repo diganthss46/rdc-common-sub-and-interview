@@ -86,7 +86,7 @@ def ask_gemini_json(prompt: str) -> List[dict]:
         return []
 
     client = genai.Client(api_key=GEMINI_API_KEY)
-    models_to_try = ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.6-flash']
+    models_to_try = ['gemini-3.6-flash', 'gemini-3.5-flash-lite']
     
     for model_name in models_to_try:
         for attempt in range(2):
